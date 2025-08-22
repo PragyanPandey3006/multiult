@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Ultroid - UserBot
 # Copyright (C) 2021-2023 TeamUltroid
+# Multi-Instance support added by @pragyan
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 
 echo "
             ┏┳┓╋┏┓╋╋╋╋┏┓┏┓
@@ -13,7 +13,23 @@ echo "
             ┗━┻━┻━┻┛┗━┻┻━┛
 
       Visit @TheUltroid for updates!!
-
+      Multi-Instance by @pragyan
 "
-if [ -f .env ] ; then  set -o allexport; source .env; set +o allexport ; fi
-if [ $SESSION1 ] ; then wget https://gist.github.com/1Danish-00/6554f034549197e5824972b01f631e0c/raw/main.py && python3 main.py ; else python3 -m pyUltroid ; fi
+
+# Load environment variables
+if [ -f .env ] ; then  
+    set -o allexport
+    source .env
+    set +o allexport
+fi
+
+# Check if multi-instance deployment is requested
+if [ "$SESSION1" ] || [ "$API_ID1" ] ; then
+    echo "🚀 Multi-Instance deployment detected!"
+    echo "Starting all instances..."
+    python3 multi_startup.py
+else
+    echo "🚀 Single instance deployment"
+    # Original single instance logic
+    python3 -m pyUltroid
+fi
